@@ -6,13 +6,14 @@
 /*   By: ribana-b <ribana-b@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 02:56:39 by ribana-b          #+#    #+# Malaga      */
-/*   Updated: 2025/06/06 04:13:14 by ribana-b         ###   ########.com      */
+/*   Updated: 2025/06/06 09:13:18 by ribana-b         ###   ########.com      */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Array.hpp"
 #include <iostream>	// For std::cout, std::cerr
 #include <cctype>	// For std::toupper
+#include <cstdlib>	// For srand, rand, time
 
 // Helper macro to pretty-print tests
 #define PP_TEST(testIndex) do{\
@@ -26,6 +27,61 @@
 	std::cerr << "\033[31m" << (__FILE__) << ":" << (__LINE__) << "\033[0m"\
 	<< ": Exception caught. Reason:\033[0m " << (exception).what() << std::endl;\
 } while(0)
+
+// This test is provided by the subject
+#define MAX_VAL 750
+void	testDefault(std::size_t testIndex)
+{
+	PP_TEST(testIndex);
+
+    Array<int> numbers(MAX_VAL);
+    int* mirror = new int[MAX_VAL];
+    srand(time(NULL));
+    for (int i = 0; i < MAX_VAL; i++)
+    {
+        const int value = rand();
+        numbers[i] = value;
+        mirror[i] = value;
+    }
+    //SCOPE
+    {
+        Array<int> tmp = numbers;
+        Array<int> test(tmp);
+    }
+
+    for (int i = 0; i < MAX_VAL; i++)
+    {
+        if (mirror[i] != numbers[i])
+        {
+            std::cerr << "didn't save the same value!!" << std::endl;
+            return;
+        }
+    }
+    try
+    {
+        numbers[-2] = 0;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    try
+    {
+        numbers[MAX_VAL] = 0;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    for (int i = 0; i < MAX_VAL; i++)
+    {
+        numbers[i] = rand();
+    }
+    delete [] mirror;//
+
+}
+#undef MAX_VAL
 
 void	testEmptyIntArray(std::size_t testIndex)
 {
@@ -147,6 +203,7 @@ int main()
 {
 	std::size_t testIndex = 0;
 
+	testDefault(testIndex++);
 	testEmptyIntArray(testIndex++);
 	testIntArrayOfFive(testIndex++);
 	testCopyArray(testIndex++);
