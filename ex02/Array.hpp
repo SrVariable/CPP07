@@ -6,7 +6,7 @@
 /*   By: ribana-b <ribana-b@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 18:05:44 by ribana-b          #+#    #+# Malaga      */
-/*   Updated: 2025/06/06 02:37:24 by ribana-b         ###   ########.com      */
+/*   Updated: 2025/06/06 09:24:04 by ribana-b         ###   ########.com      */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 /* @------------------------------------------------------------------------@ */
 
 #include <cstddef>		// For std::size_t
+#include <exception>	// For std::exception
 
 /* @------------------------------------------------------------------------@ */
 /* |                             Class Section                              | */
@@ -38,6 +39,19 @@ class Array
 		void*			operator new[](const std::size_t size);
 
 		std::size_t	size() const;
+
+		class OutOfBoundsException : public std::exception
+		{
+			public:
+				OutOfBoundsException(const int newIndex, const int newElementsSize);
+				virtual ~OutOfBoundsException() throw();
+
+				virtual const char*	what() const throw();
+
+			private:
+				const int	index;
+				const int	elementsSize;
+		};
 
 	private:
 		T*			elements;

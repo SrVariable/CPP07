@@ -16,6 +16,7 @@
 #include "Array.hpp"
 #include <iostream>		// For std::cout
 #include <exception>	// For std::exception
+#include <sstream>		// For std::streamstring
 
 // Helper macro to turn off OCF messages
 #ifdef QUIET
@@ -85,7 +86,7 @@ const T&	Array<T>::operator[](const unsigned int index) const
 {
 	if (index >= elementsSize)
 	{
-		throw(std::exception());
+		throw(OutOfBoundsException(index, elementsSize));
 	}
 	return (elements[index]);
 }
@@ -95,7 +96,7 @@ T&	Array<T>::operator[](const unsigned int index)
 {
 	if (index >= elementsSize)
 	{
-		throw(std::exception());
+		throw(OutOfBoundsException(index, elementsSize));
 	}
 	return (elements[index]);
 }
@@ -110,6 +111,34 @@ template <typename T>
 std::size_t	Array<T>::size() const
 {
 	return (elementsSize);
+}
+
+template <typename T>
+Array<T>::OutOfBoundsException::OutOfBoundsException(const int newIndex, const int newElementsSize) :
+	index(newIndex),
+	elementsSize(newElementsSize)
+{
+	OCF_MESSAGE("OutOfBoundsException constructor called");
+}
+
+template <typename T>
+Array<T>::OutOfBoundsException::~OutOfBoundsException() throw()
+{
+	OCF_MESSAGE("OutOfBoundsException Destructor called");
+}
+
+template <typename T>
+const char*	Array<T>::OutOfBoundsException::what() const throw()
+{
+	static std::string message;
+
+	std::stringstream ss;
+
+	ss << "Index out of bounds! Expected index [0, " << elementsSize << "). ";
+	ss << "Received index " << index;
+	message = ss.str();
+
+	return message.c_str();
 }
 
 #endif
